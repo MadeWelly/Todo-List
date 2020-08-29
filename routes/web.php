@@ -35,5 +35,24 @@ Route::get('/user', 'UserController@index');
 
 Route::post('/upload', 'UserController@uploadAvatar');
 
+//Auth
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
+
+//Todos
+// Route::get('/todos', 'TodoController@index')->name('todos.index');
+// Route::get('/todos/create', 'TodoController@create');
+// Route::post('/todos/create', 'TodoController@store');
+// Route::get('/todos/{todo}/edit', 'TodoController@edit');
+// Route::patch('/todos/{todo}/update', 'TodoController@update')->name('todos.update');
+// Route::delete('/todos/{todo}/delete', 'TodoController@delete')->name('todos.delete');
+
+
+
+// Route::middleware('auth')->group(function () {
+
+Route::resource('/todos', 'TodoController');
+
+Route::put('/todos/{todo}/complete', 'TodoController@complete')->name('todos.complete');
+Route::delete('/todos/{todo}/incomplete', 'TodoController@incomplete')->name('todos.incomplete');
+// });

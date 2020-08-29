@@ -5,6 +5,11 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+// use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Todo;
+
+
 
 class User extends Authenticatable
 {
@@ -51,4 +56,24 @@ class User extends Authenticatable
     // {
     //     return 'The' . ucfirst($name);
     // }
+
+    public static function uploadAvatar($image)
+    {
+        $originname = $image->getClientOriginalName();
+        (new self())->deleteOldImage();
+        $image->storeAs('images', $originname, 'public');
+        auth()->user()->update(['avatar' => $originname]);
+    }
+
+    protected function deleteOldImage()
+    {
+        if ($this->avatar) {
+            Storage::delete('/public/images/' . $this->avatar);
+        }
+    }
+
+    public function todos()
+    {
+        return $this->hasMany(Todo::class);
+    }
 }

@@ -6,6 +6,7 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -68,10 +69,44 @@ class UserController extends Controller
         return $query;
     }
 
+    // UPLOAD FILE 
     public function uploadAvatar(Request $request)
     {
-        $request->image->store('images', 'public');
-        User::find(1)->update(['avatar' => 'abcba']);
-        return 'Uploaded is Done!';
+
+        //Insert hashfile
+        // $request->image->store('images', 'public');
+        //get file orginal name
+        // $originname = $request->image->getClientOriginalName();
+
+        //Update
+        // User::find(1)->update(['avatar' => 'abcbc']);
+
+        // if ($request->hasFile('image')) {
+        //     // get file original name 
+        //     $originname = $request->image->getClientOriginalName();
+        //     $this->deleteOldImage();
+        //     //remove old file
+        //     // if (auth()->user()->avatar) {
+        //     //     Storage::delete('/public/images/' . auth()->user()->avatar);
+        //     // }
+        //     // save to folder 
+        //     $request->image->storeAs('images', $originname, 'public');
+        //     //update to db
+        //     User::find(1)->update(['avatar' => $originname]);
+        // }
+        if ($request->hasFile('image')) {
+            User::uploadAvatar($request->image);
+            // $request->session()->flash('image', 'Image Uploaded'); //success message
+            return redirect()->back()->with('image', 'Image Uploaded!');
+        }
+        $request->session()->flash('error', 'Image Not Uploaded'); //success message
+        return redirect()->back(); //error message
     }
+
+    // protected function deleteOldImage()
+    // {
+    //     if (auth()->user()->avatar) {
+    //         Storage::delete('/public/images/' . auth()->user()->avatar);
+    //     }
+    // }
 }
